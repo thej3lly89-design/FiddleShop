@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiddle Shop | محصولات</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .user-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 111, 0, 0.1);
+      padding: 4px 12px 4px 8px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .user-profile-header:hover {
+      background: rgba(255, 111, 0, 0.2);
+      border-color: #ff6f00;
+      box-shadow: 0 0 30px rgba(255, 111, 0, 0.15);
+    }
+    .user-profile-header .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .user-profile-header .user-name {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #fff;
+      white-space: nowrap;
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .user-profile-header .user-badge-header {
+      font-size: 0.55rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(255, 111, 0, 0.2);
+      color: #ff9100;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+      white-space: nowrap;
+    }
+    .user-profile-header .logout-btn {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0 3px;
+      opacity: 0.5;
+      transition: 0.3s;
+    }
+    .user-profile-header .logout-btn:hover { opacity: 1; }
+    .nav-link.hidden-link { display: none !important; }
+    .register-btn-header {
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 30px !important;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3) !important;
+      border: none !important;
+    }
+    .register-btn-header:hover {
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(245, 124, 0, 0.5) !important;
+    }
+    .login-btn-header {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 30px !important;
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.3s ease !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+    .login-btn-header:hover {
+      background: rgba(255, 255, 255, 0.15) !important;
+      transform: translateY(-2px) !important;
+    }
+    .dashboard-btn-header {
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 30px !important;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3) !important;
+      border: none !important;
+      text-decoration: none !important;
+    }
+    .dashboard-btn-header:hover {
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(245, 124, 0, 0.5) !important;
+    }
+
+    .products-hero {
+      background: linear-gradient(135deg, rgba(255, 138, 0, 0.15), rgba(0, 0, 0, 0.7)),
+                  url('images/Rimg.jpg') center/cover no-repeat;
+      padding: 60px 30px;
+      border-radius: 28px;
+      text-align: center;
+      margin-bottom: 40px;
+      border: 1px solid rgba(255, 138, 0, 0.1);
+    }
+    .products-hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #ff9100);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .products-hero p {
+      color: #aaa;
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 10px auto 0;
+    }
+    .products-hero .hero-badge {
+      display: inline-block;
+      padding: 8px 20px;
+      border-radius: 30px;
+      background: rgba(255, 138, 0, 0.2);
+      color: #ff9100;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 138, 0, 0.2);
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 10px;
+    }
+
+    .product-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 20px 18px 18px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .product-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: rgba(255, 111, 0, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    }
+    .product-card .product-image {
+      width: 100%;
+      aspect-ratio: 1/1;
+      border-radius: 18px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 15px;
+      transition: 0.5s;
+      background-color: #1a1a2e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-card:hover .product-image {
+      transform: scale(1.03);
+    }
+    .product-card .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+    .product-card .product-image .image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, 0.5));
+      z-index: 1;
+    }
+    .product-card .product-image .price-tag {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      padding: 4px 14px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 111, 0, 0.3);
+      z-index: 2;
+    }
+    .product-card .product-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.65rem;
+      font-weight: 600;
+      background: rgba(255, 111, 0, 0.2);
+      color: #ff9100;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+      z-index: 2;
+    }
+    .product-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin: 0 0 6px;
+      color: #fff;
+    }
+    .product-card .product-desc {
+      color: #888;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      flex: 1;
+      margin-bottom: 12px;
+    }
+    .product-card .product-features {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .product-card .product-features span {
+      padding: 2px 10px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      color: #888;
+      font-size: 0.65rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .product-card .btn-add-cart {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+    .product-card .btn-add-cart::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+      transform: rotate(45deg) translateX(-100%);
+      transition: 0.6s;
+    }
+    .product-card .btn-add-cart:hover::before {
+      transform: rotate(45deg) translateX(100%);
+    }
+    .product-card .btn-add-cart:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(230, 81, 0, 0.4);
+    }
+    .product-card.featured {
+      border-color: rgba(255, 111, 0, 0.3);
+      background: linear-gradient(135deg, rgba(255, 111, 0, 0.08), rgba(255, 111, 0, 0.02));
+    }
+    .product-card.featured::after {
+      content: '⭐ ویژه';
+      position: absolute;
+      top: 0;
+      left: 30px;
+      padding: 4px 14px;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      border-radius: 0 0 12px 12px;
+      z-index: 1;
+    }
+
+    .products-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 30px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .products-toolbar .search-box {
+      flex: 1;
+      min-width: 200px;
+      position: relative;
+    }
+    .products-toolbar .search-box input {
+      width: 100%;
+      padding: 12px 20px 12px 45px;
+      border-radius: 30px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-size: 0.95rem;
+      transition: 0.3s;
+    }
+    .products-toolbar .search-box input:focus {
+      outline: none;
+      border-color: #ff6f00;
+      box-shadow: 0 0 30px rgba(255, 111, 0, 0.1);
+    }
+    .products-toolbar .search-box .search-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #666;
+      font-size: 1.1rem;
+    }
+    .products-toolbar .filter-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .products-toolbar .filter-btns button {
+      padding: 8px 18px;
+      border-radius: 30px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: #888;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 0.85rem;
+    }
+    .products-toolbar .filter-btns button:hover {
+      background: rgba(255, 111, 0, 0.1);
+      color: #fff;
+    }
+    .products-toolbar .filter-btns button.active {
+      background: rgba(255, 111, 0, 0.2);
+      color: #ff9100;
+      border-color: #ff6f00;
+    }
+
+    .product-card {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .product-card:nth-child(1) { animation-delay: 0.03s; }
+    .product-card:nth-child(2) { animation-delay: 0.06s; }
+    .product-card:nth-child(3) { animation-delay: 0.09s; }
+    .product-card:nth-child(4) { animation-delay: 0.12s; }
+    .product-card:nth-child(5) { animation-delay: 0.15s; }
+    .product-card:nth-child(6) { animation-delay: 0.18s; }
+    .product-card:nth-child(7) { animation-delay: 0.21s; }
+    .product-card:nth-child(8) { animation-delay: 0.24s; }
+    .product-card:nth-child(9) { animation-delay: 0.27s; }
+    .product-card:nth-child(10) { animation-delay: 0.30s; }
+    .product-card:nth-child(11) { animation-delay: 0.33s; }
+    .product-card:nth-child(12) { animation-delay: 0.36s; }
+    .product-card:nth-child(13) { animation-delay: 0.39s; }
+    .product-card:nth-child(14) { animation-delay: 0.42s; }
+    .product-card:nth-child(15) { animation-delay: 0.45s; }
+    .product-card:nth-child(16) { animation-delay: 0.48s; }
+    .product-card:nth-child(17) { animation-delay: 0.51s; }
+
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-link {
+      padding: 6px 14px;
+      font-size: 0.85rem;
+    }
+    .brand { font-size: 1.2rem; }
+
+    .stats-grid {
+      display: grid;
+      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+    .stat-card {
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 24px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+    }
+
+    @media (max-width: 768px) {
+      .products-hero { padding: 40px 20px; }
+      .products-hero h1 { font-size: 2rem; }
+      .products-toolbar { flex-direction: column; }
+      .products-toolbar .search-box { width: 100%; }
+      .product-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
+      .product-card .product-image { aspect-ratio: 1/1; }
+      .user-profile-header .user-name { max-width: 60px; font-size: 0.7rem; }
+      .user-profile-header .user-badge-header { font-size: 0.5rem; padding: 1px 6px; }
+      .user-profile-header { padding: 3px 8px 3px 5px; }
+      .user-profile-header .avatar { width: 26px; height: 26px; font-size: 0.7rem; }
+      .top-bar { flex-wrap: wrap; gap: 8px; }
+      .nav-links { flex-wrap: wrap; justify-content: center; }
+    }
+
+    @media (max-width: 480px) {
+      .product-grid { grid-template-columns: 1fr; }
+      .product-card .product-image { aspect-ratio: 1/1; }
+      .products-hero h1 { font-size: 1.5rem; }
+      .user-profile-header .user-name { display: none; }
+      .user-profile-header .user-badge-header { display: none; }
+    }
+
+    @media (max-width: 600px) {
+      .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+      .nav-links { justify-content: center; }
+      #user-profile-container { order: -1; display: flex; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="preloader">
+    <div class="preloader-circle"></div>
+    <p>در حال بارگذاری...</p>
+  </div>
+  <div class="page-wrap">
+    <header class="top-bar">
+      <div class="brand">Fiddle Shop</div>
+      <div id="user-profile-container"></div>
+      <nav class="nav-links" id="mainNav">
+        <a href="index.html" class="nav-link">خانه</a>
+        <a href="dashboard.html" class="dashboard-btn-header" id="dashboardHeaderBtn">🚀 داشبورد</a>
+        <a href="#" class="nav-link register-btn-header" id="open-register-btn">📝 ثبت نام</a>
+        <a href="login.html" class="nav-link login-btn-header" id="loginLink">ورود</a>
+        <a href="admin.html" class="nav-link admin-link hidden" id="adminLink">پنل ادمین</a>
+      </nav>
+    </header>
+
+    <div class="products-hero">
+      <span class="hero-badge">🎯 بزن بریم سفارشی کن</span>
+      <h1>محصولات Fiddle Shop</h1>
+      <p>اینجا نمونه محصولات ماینکرافت را ببینید و سفارش خود را با فرم هوشمند ثبت کنید.</p>
+    </div>
+
+    <main>
+      <div class="products-toolbar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" placeholder="جستجوی محصولات...">
+        </div>
+        <div class="filter-btns">
+          <button class="active" data-filter="all">همه</button>
+          <button data-filter="profile">پروفایل</button>
+        </div>
+      </div>
+
+      <section class="section products">
+        <div class="product-grid" id="productGrid">
+
+          <!-- ===== محصول 1 ===== -->
+          <article class="product-card featured" data-type="profile" data-name="پروفایل ماینکرافتی کد 1" data-price="85000">
+            <div class="product-image" id="img1">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🔥 محبوب</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 1</h3>
+            <p class="product-desc">پروفایل اختصاصی با طراحی ماینکرافتی و جزئیات حرفه‌ای.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🎨 اختصاصی</span>
+              <span>✨ با کیفیت</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 2 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 2" data-price="85000">
+            <div class="product-image" id="img2">
+              <div class="image-overlay"></div>
+              <span class="product-badge">⭐ ویژه</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 2</h3>
+            <p class="product-desc">پروفایل ماینکرافتی با استایل خاص و رنگ‌های جذاب.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🎨 استایل خاص</span>
+              <span>✨ جذاب</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 3 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 3" data-price="85000">
+            <div class="product-image" id="img3">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🎨 هنری</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 3</h3>
+            <p class="product-desc">طراحی هنری و منحصر‌به‌فرد برای پروفایل ماینکرافت.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🎨 هنری</span>
+              <span>✨ منحصر‌به‌فرد</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 4 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 4" data-price="85000">
+            <div class="product-image" id="img4">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🌙 شب</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 4</h3>
+            <p class="product-desc">پروفایل با تم شب و رنگ‌های تیره و مرموز.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🌙 تم شب</span>
+              <span>✨ مرموز</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 5 ===== -->
+          <article class="product-card featured" data-type="profile" data-name="پروفایل ماینکرافتی کد 5" data-price="85000">
+            <div class="product-image" id="img5">
+              <div class="image-overlay"></div>
+              <span class="product-badge">👑 سلطنتی</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 5</h3>
+            <p class="product-desc">پروفایل با طراحی سلطنتی و جزئیات لوکس.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>👑 سلطنتی</span>
+              <span>✨ لوکس</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 6 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 6" data-price="85000">
+            <div class="product-image" id="img6">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🎮 گیمینگ</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 6</h3>
+            <p class="product-desc">پروفایل مخصوص گیمرها با استایل گیمینگ.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🎮 گیمینگ</span>
+              <span>✨ جذاب</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 7 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 7" data-price="85000">
+            <div class="product-image" id="img7">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🌈 رنگارنگ</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 7</h3>
+            <p class="product-desc">پروفایل با رنگ‌های شاد و زنده ماینکرافتی.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🌈 رنگارنگ</span>
+              <span>✨ شاد</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 8 ===== -->
+          <article class="product-card featured" data-type="profile" data-name="پروفایل ماینکرافتی کد 8" data-price="85000">
+            <div class="product-image" id="img8">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🔥 محبوب</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 8</h3>
+            <p class="product-desc">پروفایل محبوب با طراحی خاص و چشم‌نواز.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🔥 محبوب</span>
+              <span>✨ خاص</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 9 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 9" data-price="85000">
+            <div class="product-image" id="img9">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🌿 طبیعی</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 9</h3>
+            <p class="product-desc">پروفایل با تم طبیعی و رنگ‌های سبز و آبی.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🌿 طبیعی</span>
+              <span>✨ آرامش‌بخش</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 10 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 10" data-price="85000">
+            <div class="product-image" id="img10">
+              <div class="image-overlay"></div>
+              <span class="product-badge">⚡ انرژی</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 10</h3>
+            <p class="product-desc">پروفایل با انرژی و طراحی پویا.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>⚡ انرژی</span>
+              <span>✨ پویا</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 11 ===== -->
+          <article class="product-card featured" data-type="profile" data-name="پروفایل ماینکرافتی کد 11" data-price="85000">
+            <div class="product-image" id="img11">
+              <div class="image-overlay"></div>
+              <span class="product-badge">⭐ ویژه</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 11</h3>
+            <p class="product-desc">پروفایل ویژه با طراحی منحصر‌به‌فرد.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>⭐ ویژه</span>
+              <span>✨ منحصر‌به‌فرد</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 12 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 12" data-price="85000">
+            <div class="product-image" id="img12">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🎨 هنری</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 12</h3>
+            <p class="product-desc">طراحی هنری با جزئیات دقیق ماینکرافتی.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🎨 هنری</span>
+              <span>✨ دقیق</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 13 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 13" data-price="85000">
+            <div class="product-image" id="img13">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🌙 شب</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 13</h3>
+            <p class="product-desc">پروفایل با تم شب و ستاره‌های درخشان.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🌙 شب</span>
+              <span>✨ ستاره‌ای</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 14 ===== -->
+          <article class="product-card featured" data-type="profile" data-name="پروفایل ماینکرافتی کد 14" data-price="85000">
+            <div class="product-image" id="img14">
+              <div class="image-overlay"></div>
+              <span class="product-badge">👑 سلطنتی</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 14</h3>
+            <p class="product-desc">پروفایل سلطنتی با طلا و جواهرات ماینکرافتی.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>👑 سلطنتی</span>
+              <span>✨ طلایی</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 15 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 15" data-price="85000">
+            <div class="product-image" id="img15">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🎮 گیمینگ</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 15</h3>
+            <p class="product-desc">پروفایل مخصوص گیمرهای حرفه‌ای ماینکرافت.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🎮 گیمینگ</span>
+              <span>✨ حرفه‌ای</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 16 ===== -->
+          <article class="product-card" data-type="profile" data-name="پروفایل ماینکرافتی کد 16" data-price="85000">
+            <div class="product-image" id="img16">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🌈 رنگارنگ</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 16</h3>
+            <p class="product-desc">پروفایل با رنگ‌های شاد و متنوع ماینکرافتی.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🌈 رنگارنگ</span>
+              <span>✨ شاد</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+          <!-- ===== محصول 17 ===== -->
+          <article class="product-card featured" data-type="profile" data-name="پروفایل ماینکرافتی کد 17" data-price="85000">
+            <div class="product-image" id="img17">
+              <div class="image-overlay"></div>
+              <span class="product-badge">🔥 محبوب</span>
+              <span class="price-tag">۸۵,۰۰۰ تومان</span>
+            </div>
+            <h3>پروفایل ماینکرافتی کد 17</h3>
+            <p class="product-desc">پروفایل محبوب و پرطرفدار با طراحی خاص.</p>
+            <div class="product-features">
+              <span>⛏️ ماینکرافت</span>
+              <span>🔥 محبوب</span>
+              <span>✨ خاص</span>
+            </div>
+            <button type="button" class="btn-add-cart add-to-cart">➕ افزودن به سبد خرید</button>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="section stats">
+        <h2 style="text-align:center;font-size:2rem;margin-bottom:30px;">✨ ویژگی‌های خفن</h2>
+        <div class="stats-grid">
+          <article class="stat-card">
+            <h3>📦 مدیریت سفارش‌ها</h3>
+            <p>هر سفارش در لوکال استوریج ذخیره می‌شود و در پنل ادمین نمایش می‌یابد.</p>
+          </article>
+          <article class="stat-card">
+            <h3>👤 ثبت نام و ورود</h3>
+            <p>ثبت نام آسان و ورود سریع برای همه کاربران با سیستم امن.</p>
+          </article>
+          <article class="stat-card">
+            <h3>👑 پنل حرفه‌ای</h3>
+            <p>صفحه ادمین اختصاصی برای مشاهده سفارش‌ها و کاربران.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© ۲۰۲۶ Fiddle Shop. همه حقوق محفوظ است.</p>
+    </footer>
+  </div>
+
+  <!-- ===== سبد خرید ===== -->
+  <div class="cart-float" aria-live="polite">
+    <button type="button" class="cart-float-button cart-toggle" aria-expanded="false">
+      <span class="cart-icon">🛒</span>
+      <span class="cart-count">۰</span>
+    </button>
+    <div class="cart-panel">
+      <div class="cart-panel-header"><h3>سبد خرید</h3></div>
+      <div class="cart-widget-body">
+        <p class="cart-empty">سبد خرید خالی است.</p>
+        <ul class="cart-list"></ul>
+        <div class="cart-summary">
+          <p class="cart-total">مجموع: ۰ تومان</p>
+          <p class="cart-items-count">تعداد آیتم‌ها: ۰</p>
+        </div>
+        <div class="cart-actions">
+          <button type="button" class="btn-secondary continue-shopping">ادامه خرید</button>
+          <button type="button" class="btn-primary btn-checkout" disabled>پرداخت نهایی</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== مودال فرم سفارش ===== -->
+  <div class="modal-overlay hidden">
+    <div class="modal">
+      <button type="button" class="close-modal" aria-label="بستن فرم">×</button>
+      <h3 class="modal-title">فرم سفارش</h3>
+      <form class="product-form">
+        <div class="form-group">
+          <label for="product-type">محصول</label>
+          <input id="product-type" name="productType" type="text" readonly>
+        </div>
+        <div class="dynamic-fields"></div>
+        <div class="form-group">
+          <label for="extra-notes">توضیحات اضافی</label>
+          <textarea id="extra-notes" name="extraNotes" rows="3" placeholder="مثلاً رنگ مورد علاقه یا جزئیات بیشتر"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="user-id">آیدی یاهو/روبیکا</label>
+          <input id="user-id" name="userId" type="text" placeholder="مثلاً your_id@" required>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">افزودن به سبد خرید</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // ===== پروفایل کاربر =====
+    const CURRENT_USER_KEY = 'fiddle-current-user';
+
+    function getCurrentUser() {
+      try { return JSON.parse(localStorage.getItem(CURRENT_USER_KEY)) || null; } catch { return null; }
+    }
+
+    function clearCurrentUser() { localStorage.removeItem(CURRENT_USER_KEY); }
+
+    function renderUserProfile() {
+      const user = getCurrentUser();
+      const container = document.getElementById('user-profile-container');
+      if (!container) return;
+
+      const registerBtn = document.getElementById('open-register-btn');
+      const loginLink = document.getElementById('loginLink');
+      const adminLink = document.getElementById('adminLink');
+      const dashboardHeaderBtn = document.getElementById('dashboardHeaderBtn');
+
+      if (user) {
+        const firstLetter = (user.displayName || user.username || 'F')[0].toUpperCase();
+        const isAdmin = user.isAdmin || false;
+        container.innerHTML = `
+          <div class="user-profile-header" id="userProfileBtn">
+            <div class="avatar">${firstLetter}</div>
+            <span class="user-name">${user.displayName || user.username}</span>
+            <span class="user-badge-header">${isAdmin ? '👑 ادمین' : '⭐ کاربر'}</span>
+            <button class="logout-btn" id="logoutBtn" title="خروج">🚪</button>
+          </div>
+        `;
+        if (registerBtn) registerBtn.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'none';
+        if (dashboardHeaderBtn) {
+          dashboardHeaderBtn.style.display = 'inline-block';
+          dashboardHeaderBtn.textContent = '🚀 داشبورد';
+          dashboardHeaderBtn.href = 'dashboard.html';
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (confirm('آیا مطمئنی می‌خوای خارج بشی؟')) { clearCurrentUser(); location.reload(); }
+        });
+        document.getElementById('userProfileBtn')?.addEventListener('click', function() {
+          window.location.href = 'dashboard.html';
+        });
+        if (isAdmin && adminLink) adminLink.classList.remove('hidden');
+        else if (adminLink) adminLink.classList.add('hidden');
+      } else {
+        container.innerHTML = `<div style="display:flex;align-items:center;gap:6px;color:#888;font-size:0.8rem;"><span>👤</span><span>مهمان</span></div>`;
+        if (registerBtn) { registerBtn.style.display = 'inline-block'; registerBtn.textContent = '📝 ثبت نام'; registerBtn.href = '#'; }
+        if (loginLink) loginLink.style.display = 'inline-block';
+        if (adminLink) adminLink.classList.add('hidden');
+        if (dashboardHeaderBtn) dashboardHeaderBtn.style.display = 'none';
+      }
+    }
+
+    // ===== بارگذاری عکس‌ها =====
+    function loadImages() {
+      const emojis = ['⛏️', '⚔️', '🖌️', '🌙', '👑', '🎮', '🌈', '🔥', '🌿', '⚡', '⭐', '🎨', '🌙', '👑', '🎮', '🌈', '🔥'];
+      
+      for (let i = 1; i <= 17; i++) {
+        const container = document.getElementById('img' + i);
+        if (!container) continue;
+        
+        const img = document.createElement('img');
+        img.src = 'ProfileNem/Profile' + i + '.jpg';
+        img.alt = 'پروفایل ماینکرافتی کد ' + i;
+        img.onerror = function() {
+          this.style.display = 'none';
+          const emoji = document.createElement('span');
+          emoji.style.cssText = 'font-size:4rem;z-index:0;';
+          emoji.textContent = emojis[i-1] || '🖼️';
+          container.appendChild(emoji);
+          console.log('❌ عکس پیدا نشد: Profile' + i + '.jpg - ایموجی جایگزین شد');
+        };
+        img.onload = function() {
+          console.log('✅ عکس با موفقیت بارگذاری شد: Profile' + i + '.jpg');
+        };
+        container.appendChild(img);
+      }
+    }
+
+    // ===== فیلتر و جستجو =====
+    document.addEventListener('DOMContentLoaded', function() {
+      renderUserProfile();
+      loadImages();
+
+      const searchInput = document.getElementById('searchInput');
+      const filterBtns = document.querySelectorAll('.filter-btns button');
+      const productCards = document.querySelectorAll('.product-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          filterBtns.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const filter = this.dataset.filter;
+          const searchTerm = searchInput.value.toLowerCase();
+          productCards.forEach(card => {
+            const type = card.dataset.type;
+            const name = card.dataset.name.toLowerCase();
+            const matchFilter = filter === 'all' || type === filter;
+            const matchSearch = name.includes(searchTerm) || searchTerm === '';
+            if (matchFilter && matchSearch) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const activeFilter = document.querySelector('.filter-btns .active');
+        const filter = activeFilter ? activeFilter.dataset.filter : 'all';
+        productCards.forEach(card => {
+          const type = card.dataset.type;
+          const name = card.dataset.name.toLowerCase();
+          const matchFilter = filter === 'all' || type === filter;
+          const matchSearch = name.includes(searchTerm) || searchTerm === '';
+          if (matchFilter && matchSearch) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    console.log('🔥 صفحه محصولات با ۱۷ محصول بارگذاری شد!');
+    console.log('📸 عکس‌ها از پوشه ProfileNem/Profile1.jpg تا Profile17.jpg');
+    console.log('💡 سایز عکس‌ها ۱:۱ (مربع) تنظیم شده است.');
+    console.log('💡 اگه عکس نباشه، ایموجی جایگزین میشود.');
+  </script>
+</body>
+</html>

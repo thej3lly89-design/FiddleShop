@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiddle Shop | فروشگاه ماینکرافت</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ===== استایل پروفایل کاربر در هدر ===== */
+    .user-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 111, 0, 0.1);
+      padding: 4px 12px 4px 8px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .user-profile-header:hover {
+      background: rgba(255, 111, 0, 0.2);
+      border-color: #ff6f00;
+      box-shadow: 0 0 30px rgba(255, 111, 0, 0.15);
+    }
+
+    .user-profile-header .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(255, 111, 0, 0.3);
+    }
+
+    .user-profile-header .user-name {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #fff;
+      white-space: nowrap;
+      max-width: 80px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .user-profile-header .user-badge-header {
+      font-size: 0.55rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(255, 111, 0, 0.2);
+      color: #ff9100;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+      white-space: nowrap;
+    }
+
+    .user-profile-header .logout-btn {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0 3px;
+      transition: 0.3s;
+      opacity: 0.5;
+    }
+
+    .user-profile-header .logout-btn:hover {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    /* ===== مخفی کردن لینک‌ها ===== */
+    .nav-link.hidden-link {
+      display: none !important;
+    }
+
+    /* ===== دکمه ثبت نام در هدر ===== */
+    .register-btn-header {
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 30px !important;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3) !important;
+      border: none !important;
+    }
+
+    .register-btn-header:hover {
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(245, 124, 0, 0.5) !important;
+    }
+
+    /* ===== دکمه ورود در هدر ===== */
+    .login-btn-header {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 30px !important;
+      font-weight: 600 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.3s ease !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .login-btn-header:hover {
+      background: rgba(255, 255, 255, 0.15) !important;
+      transform: translateY(-2px) !important;
+    }
+
+    /* ===== دکمه داشبورد در هدر ===== */
+    .dashboard-btn-header {
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff !important;
+      padding: 6px 16px !important;
+      border-radius: 30px !important;
+      font-weight: 700 !important;
+      font-size: 0.85rem !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3) !important;
+      border: none !important;
+      text-decoration: none !important;
+    }
+
+    .dashboard-btn-header:hover {
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(245, 124, 0, 0.5) !important;
+    }
+
+    /* ===== مودال ثبت نام ===== */
+    .register-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(20px);
+      display: grid;
+      place-items: center;
+      padding: 15px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    .register-modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .register-modal {
+      width: min(400px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: linear-gradient(145deg, #1a1a1a, #0d0d0d);
+      border-radius: 24px;
+      border: 1px solid rgba(255, 111, 0, 0.15);
+      padding: 28px 25px 25px;
+      position: relative;
+      transform: scale(0.7) rotateX(40deg) translateY(60px);
+      opacity: 0;
+      transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: 0 40px 100px rgba(0, 0, 0, 0.6), 0 0 60px rgba(255, 111, 0, 0.05);
+    }
+
+    .register-modal-overlay.open .register-modal {
+      transform: scale(1) rotateX(0deg) translateY(0);
+      opacity: 1;
+    }
+
+    .register-modal::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border-radius: 26px;
+      background: linear-gradient(135deg, #ff6f00, #ff9100, #e65100, #ff6f00);
+      background-size: 300% 300%;
+      z-index: -1;
+      animation: gradient-border 4s ease-in-out infinite;
+      opacity: 0.3;
+    }
+
+    @keyframes gradient-border {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .register-modal .close-register {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: 0.4s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .register-modal .close-register:hover {
+      background: rgba(255, 0, 0, 0.2);
+      transform: rotate(90deg);
+    }
+
+    .register-modal .modal-icon {
+      font-size: 2.5rem;
+      text-align: center;
+      display: block;
+      margin-bottom: 5px;
+      animation: float-icon 3s ease-in-out infinite;
+    }
+
+    @keyframes float-icon {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .register-modal h2 {
+      text-align: center;
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #ff9100);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .register-modal .subtitle {
+      text-align: center;
+      color: #888;
+      font-size: 0.8rem;
+      margin-bottom: 18px;
+    }
+
+    .register-modal .form-group {
+      margin-bottom: 12px;
+    }
+
+    .register-modal .form-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #ccc;
+      margin-bottom: 4px;
+    }
+
+    .register-modal .form-group input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .register-modal .form-group input:focus {
+      outline: none;
+      border-color: #ff6f00;
+      box-shadow: 0 0 30px rgba(255, 111, 0, 0.15);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .register-modal .form-group input::placeholder {
+      color: #555;
+      font-size: 0.85rem;
+    }
+
+    .register-modal .admin-field {
+      border-color: rgba(255, 111, 0, 0.2);
+    }
+
+    .register-modal .admin-label {
+      color: #ff9100 !important;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem !important;
+    }
+
+    .register-modal .admin-label::after {
+      content: '🔑';
+      font-size: 0.8rem;
+    }
+
+    .register-modal .submit-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      margin-top: 3px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .register-modal .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+      transform: rotate(45deg) translateX(-100%);
+      transition: 0.6s;
+    }
+
+    .register-modal .submit-btn:hover::before {
+      transform: rotate(45deg) translateX(100%);
+    }
+
+    .register-modal .submit-btn:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(230, 81, 0, 0.4);
+    }
+
+    .register-modal .submit-btn:active {
+      transform: scale(0.97);
+    }
+
+    .register-modal .form-footer {
+      text-align: center;
+      margin-top: 14px;
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    .register-modal .form-footer a {
+      color: #ff9100;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    .register-modal .form-footer a:hover {
+      color: #ff6f00;
+    }
+
+    .register-modal .error-message {
+      color: #ff4444;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .register-modal .success-message {
+      color: #00ff64;
+      font-size: 0.75rem;
+      margin-top: 4px;
+      text-align: center;
+      min-height: 20px;
+    }
+
+    .register-modal::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .register-modal::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .register-modal::-webkit-scrollbar-thumb {
+      background: #ff6f00;
+      border-radius: 10px;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-link {
+      padding: 6px 14px;
+      font-size: 0.85rem;
+    }
+
+    .brand {
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 768px) {
+      .register-modal {
+        padding: 20px 18px 18px;
+        width: min(360px, 100%);
+      }
+
+      .register-modal h2 {
+        font-size: 1.2rem;
+      }
+
+      .user-profile-header .user-name {
+        max-width: 60px;
+        font-size: 0.7rem;
+      }
+
+      .user-profile-header .user-badge-header {
+        font-size: 0.5rem;
+        padding: 1px 6px;
+      }
+
+      .user-profile-header {
+        padding: 3px 8px 3px 5px;
+      }
+
+      .user-profile-header .avatar {
+        width: 26px;
+        height: 26px;
+        font-size: 0.7rem;
+      }
+
+      .register-btn-header,
+      .login-btn-header,
+      .dashboard-btn-header {
+        padding: 4px 12px !important;
+        font-size: 0.75rem !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .register-modal {
+        padding: 16px 14px 14px;
+        width: min(320px, 100%);
+        border-radius: 18px;
+      }
+
+      .register-modal h2 {
+        font-size: 1rem;
+      }
+
+      .register-modal .modal-icon {
+        font-size: 2rem;
+      }
+
+      .register-modal .form-group input {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+      }
+
+      .register-modal .submit-btn {
+        padding: 10px;
+        font-size: 0.9rem;
+      }
+
+      .user-profile-header .user-name {
+        display: none;
+      }
+
+      .user-profile-header .user-badge-header {
+        display: none;
+      }
+
+      .user-profile-header .logout-btn {
+        font-size: 0.7rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .nav-links {
+        justify-content: center;
+      }
+
+      #user-profile-container {
+        order: -1;
+        display: flex;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="preloader">
+    <div class="preloader-circle"></div>
+    <p>در حال بارگذاری...</p>
+  </div>
+  <div class="page-wrap">
+    <header class="top-bar">
+      <div class="brand">Fiddle Shop</div>
+      
+      <!-- ===== پروفایل کاربر (سمت چپ بالا) ===== -->
+      <div id="user-profile-container">
+        <!-- اینجا پروفایل کاربر نمایش داده میشه -->
+      </div>
+
+      <nav class="nav-links" id="mainNav">
+        <a href="products.html" class="nav-link">محصولات</a>
+        <!-- فقط یک دکمه داشبورد اینجا هست -->
+        <a href="dashboard.html" class="dashboard-btn-header" id="dashboardHeaderBtn">🚀 داشبورد</a>
+        <a href="#" class="nav-link register-btn-header" id="open-register-btn">📝 ثبت نام</a>
+        <a href="login.html" class="nav-link login-btn-header" id="loginLink">ورود</a>
+        <a href="admin.html" class="nav-link admin-link hidden" id="adminLink">پنل ادمین</a>
+        <div class="user-controls" id="user-controls"></div>
+      </nav>
+    </header>
+
+    <header class="hero hero-primary">
+      <div class="hero-content">
+        <span class="hero-badge">سرویس ویژه طراحی ماینکرافت</span>
+        <h1>Fiddle Shop | قدرتمندترین فروشگاه اسکین و تامنیل</h1>
+        <p>طراحی پروفایل، تامنیل و اسکین اختصاصی با استایل ماینکرافتی و سرعت فوق‌العاده.</p>
+        <div class="hero-actions" id="heroActions">
+          <a href="products.html" target="_blank" class="btn-primary">مشاهده محصولات</a>
+          <!-- دکمه داشبورد در هیرو حذف شد -->
+          <a href="#" class="btn-secondary" id="open-register-btn-hero">ثبت نام / ورود</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section features">
+        <h2>چرا Fiddle Shop؟</h2>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>طراحی سفارشی</h3>
+            <p>هر سفارش با استایل ماینکرافتی و رنگ‌های نارنجی با بک‌گراند بلوکی ساخته می‌شود.</p>
+          </article>
+          <article class="feature-card">
+            <h3>انتخاب سریع</h3>
+            <p>مدیریت سفارش، سبد خرید پرسرعت و پرداخت با تجربه کاربری مدرن.</p>
+          </article>
+          <article class="feature-card">
+            <h3>پشتیبانی ۲۴/۷</h3>
+            <p>ادمین آنلاین و ثبت سفارش اختصاصی همراه با پنل مدیریت حرفه‌ای.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section showcase">
+        <div class="section-grid">
+          <div class="section-text">
+            <h2>محصولات محبوب</h2>
+            <p>محصولات ویژه و پرطرفدار ما برای استارترها و گیمرهای حرفه‌ای آماده شده‌اند.</p>
+          </div>
+          <div class="product-highlight">
+            <div class="product-card highlight">
+              <div class="product-image image-skin"></div>
+              <h3>طراحی اسکین اختصاصی</h3>
+              <p>رنگ‌های سفارشی، جزئیات دقیق و استایل کلاسیک ماینکرافت.</p>
+              <span class="price">۱۱۰,۰۰۰ تومان</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section testimonials">
+        <h2>نظرات کاربران</h2>
+        <div class="testimonial-grid">
+          <article class="testimonial-card">
+            <p>«طراحی اسکین خیلی خفن بود. سرعت پاسخ‌گویی عالی و نتیجه دقیق بود.»</p>
+            <span>— آرش</span>
+          </article>
+          <article class="testimonial-card">
+            <p>«پنل سفارش حرفه‌ای و راحت، خیلی سریع تونستم همه جزئیات رو انتخاب کنم.»</p>
+            <span>— نسترن</span>
+          </article>
+          <article class="testimonial-card">
+            <p>«احساسی مثل فروشگاه واقعی داشت. طراحی سایتش خیلی چشمگیره.»</p>
+            <span>— پارسا</span>
+          </article>
+        </div>
+      </section>
+
+    </main>
+    <footer class="footer">
+      <p>© ۲۰۲۶ Fiddle Shop. همه حقوق محفوظ است.</p>
+    </footer>
+  </div>
+
+  <!-- ===== مودال ثبت نام ===== -->
+  <div class="register-modal-overlay" id="registerModal">
+    <div class="register-modal">
+      <button type="button" class="close-register" id="closeRegisterModal">×</button>
+      <span class="modal-icon">🎮</span>
+      <h2>ثبت نام</h2>
+      <p class="subtitle">به جمع گیمرها بپیوند!</p>
+      
+      <form id="register-form-modal">
+        <div class="form-group">
+          <label for="reg-display-name">نام نمایشی</label>
+          <input id="reg-display-name" type="text" placeholder="مثلاً احمد کریمی" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-username">نام کاربری</label>
+          <input id="reg-username" type="text" placeholder="مثلاً player01" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-password">رمز عبور</label>
+          <input id="reg-password" type="password" placeholder="رمز عبور قوی" required>
+        </div>
+        <div class="form-group">
+          <label for="reg-admin-code" class="admin-label">رمز ادمین (اختیاری)</label>
+          <input id="reg-admin-code" type="password" class="admin-field" placeholder="اگر کد ادمین داری وارد کن">
+        </div>
+        <div id="register-error" class="error-message"></div>
+        <div id="register-success" class="success-message"></div>
+        <button type="submit" class="submit-btn">✨ ثبت نام</button>
+      </form>
+      
+      <div class="form-footer">
+        قبلاً ثبت نام کردی؟ <a href="login.html" id="loginLinkFooter">وارد شو</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== سبد خرید ===== -->
+  <div class="cart-float" aria-live="polite">
+    <button type="button" class="cart-float-button cart-toggle" aria-expanded="false">
+      <span class="cart-icon">🛒</span>
+      <span class="cart-count">۰</span>
+    </button>
+    <div class="cart-panel">
+      <div class="cart-panel-header">
+        <h3>سبد خرید</h3>
+      </div>
+      <div class="cart-widget-body">
+        <p class="cart-empty">سبد خرید خالی است.</p>
+        <ul class="cart-list"></ul>
+        <div class="cart-summary">
+          <p class="cart-total">مجموع: ۰ تومان</p>
+          <p class="cart-items-count">تعداد آیتم‌ها: ۰</p>
+        </div>
+        <div class="cart-actions">
+          <button type="button" class="btn-secondary continue-shopping">ادامه خرید</button>
+          <button type="button" class="btn-primary btn-checkout" disabled>پرداخت نهایی</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== مودال فرم سفارش ===== -->
+  <div class="modal-overlay hidden">
+    <div class="modal">
+      <button type="button" class="close-modal" aria-label="بستن فرم">×</button>
+      <h3 class="modal-title">فرم سفارش</h3>
+      <form class="product-form">
+        <div class="form-group">
+          <label for="product-type">محصول</label>
+          <input id="product-type" name="productType" type="text" readonly>
+        </div>
+        <div class="dynamic-fields"></div>
+        <div class="form-group">
+          <label for="extra-notes">توضیحات اضافی</label>
+          <textarea id="extra-notes" name="extraNotes" rows="3" placeholder="مثلاً رنگ مورد علاقه یا جزئیات بیشتر"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="user-id">آیدی یاهو/روبیکا</label>
+          <input id="user-id" name="userId" type="text" placeholder="مثلاً your_id@" required>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">افزودن به سبد خرید</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // ============================================
+    // سیستم ثبت نام + پروفایل کاربر + ادمین
+    // ============================================
+
+    const ADMIN_CODE = '29thd03kasra';
+    const USERS_KEY = 'fiddle-users';
+    const CURRENT_USER_KEY = 'fiddle-current-user';
+
+    const registerModal = document.getElementById('registerModal');
+    const openRegisterBtns = document.querySelectorAll('#open-register-btn, #open-register-btn-hero');
+    const closeRegisterBtn = document.getElementById('closeRegisterModal');
+    const registerForm = document.getElementById('register-form-modal');
+    const profileContainer = document.getElementById('user-profile-container');
+
+    function getUsers() {
+      try {
+        return JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function getCurrentUser() {
+      try {
+        return JSON.parse(localStorage.getItem(CURRENT_USER_KEY)) || null;
+      } catch {
+        return null;
+      }
+    }
+
+    function saveCurrentUser(user) {
+      localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+    }
+
+    function clearCurrentUser() {
+      localStorage.removeItem(CURRENT_USER_KEY);
+    }
+
+    function renderUserProfile() {
+      const user = getCurrentUser();
+      if (!profileContainer) return;
+
+      const registerBtn = document.getElementById('open-register-btn');
+      const loginLink = document.getElementById('loginLink');
+      const loginLinkFooter = document.getElementById('loginLinkFooter');
+      const adminLink = document.getElementById('adminLink');
+      const heroRegisterBtn = document.getElementById('open-register-btn-hero');
+      const dashboardHeaderBtn = document.getElementById('dashboardHeaderBtn');
+
+      if (user) {
+        const firstLetter = (user.displayName || user.username || 'F')[0].toUpperCase();
+        const isAdmin = user.isAdmin || false;
+        
+        profileContainer.innerHTML = `
+          <div class="user-profile-header" id="userProfileBtn">
+            <div class="avatar">${firstLetter}</div>
+            <span class="user-name">${user.displayName || user.username}</span>
+            <span class="user-badge-header">${isAdmin ? '👑 ادمین' : '⭐ کاربر'}</span>
+            <button class="logout-btn" id="logoutBtn" title="خروج">🚪</button>
+          </div>
+        `;
+
+        // مخفی کردن دکمه‌های ثبت نام و ورود
+        if (registerBtn) registerBtn.style.display = 'none';
+        if (loginLink) loginLink.style.display = 'none';
+        if (loginLinkFooter) loginLinkFooter.style.display = 'none';
+        if (heroRegisterBtn) heroRegisterBtn.style.display = 'none';
+
+        // نمایش دکمه داشبورد در هدر
+        if (dashboardHeaderBtn) {
+          dashboardHeaderBtn.style.display = 'inline-block';
+          dashboardHeaderBtn.textContent = '🚀 داشبورد';
+          dashboardHeaderBtn.href = 'dashboard.html';
+        }
+
+        // دکمه خروج
+        document.getElementById('logoutBtn')?.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (confirm('آیا مطمئنی می‌خوای خارج بشی؟')) {
+            clearCurrentUser();
+            location.reload();
+          }
+        });
+
+        document.getElementById('userProfileBtn')?.addEventListener('click', function() {
+          window.location.href = 'dashboard.html';
+        });
+
+        if (isAdmin && adminLink) {
+          adminLink.classList.remove('hidden');
+        } else if (adminLink) {
+          adminLink.classList.add('hidden');
+        }
+
+      } else {
+        profileContainer.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 6px; color: #888; font-size: 0.8rem;">
+            <span>👤</span>
+            <span>مهمان</span>
+          </div>
+        `;
+
+        if (registerBtn) {
+          registerBtn.style.display = 'inline-block';
+          registerBtn.textContent = '📝 ثبت نام';
+          registerBtn.href = '#';
+        }
+        if (loginLink) loginLink.style.display = 'inline-block';
+        if (loginLinkFooter) loginLinkFooter.style.display = 'inline';
+        if (heroRegisterBtn) {
+          heroRegisterBtn.style.display = 'inline-block';
+          heroRegisterBtn.textContent = 'ثبت نام / ورود';
+        }
+        if (adminLink) adminLink.classList.add('hidden');
+
+        // مخفی کردن دکمه داشبورد در هدر اگر کاربر وارد نشده
+        if (dashboardHeaderBtn) {
+          dashboardHeaderBtn.style.display = 'none';
+        }
+      }
+    }
+
+    function openRegisterModal() {
+      registerModal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRegisterModal() {
+      registerModal.classList.remove('open');
+      document.body.style.overflow = '';
+      registerForm.reset();
+      document.getElementById('register-error').textContent = '';
+      document.getElementById('register-success').textContent = '';
+    }
+
+    openRegisterBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const user = getCurrentUser();
+        if (user) {
+          window.location.href = 'dashboard.html';
+          return;
+        }
+        openRegisterModal();
+      });
+    });
+
+    closeRegisterBtn?.addEventListener('click', closeRegisterModal);
+    registerModal?.addEventListener('click', function(e) {
+      if (e.target === this) closeRegisterModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeRegisterModal();
+    });
+
+    registerForm?.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const displayName = document.getElementById('reg-display-name').value.trim();
+      const username = document.getElementById('reg-username').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      const adminCode = document.getElementById('reg-admin-code').value.trim();
+
+      const errorEl = document.getElementById('register-error');
+      const successEl = document.getElementById('register-success');
+
+      if (!displayName || !username || !password) {
+        errorEl.textContent = '❌ همه فیلدها رو پر کن!';
+        successEl.textContent = '';
+        return;
+      }
+
+      if (username.length < 3) {
+        errorEl.textContent = '❌ نام کاربری حداقل ۳ کاراکتر!';
+        successEl.textContent = '';
+        return;
+      }
+
+      if (password.length < 4) {
+        errorEl.textContent = '❌ رمز حداقل ۴ کاراکتر!';
+        successEl.textContent = '';
+        return;
+      }
+
+      const users = getUsers();
+      if (users.some(u => u.username === username)) {
+        errorEl.textContent = '❌ این نام کاربری قبلاً ثبت شده!';
+        successEl.textContent = '';
+        return;
+      }
+
+      const isAdmin = adminCode === ADMIN_CODE;
+
+      const newUser = {
+        id: Date.now(),
+        displayName,
+        username,
+        password,
+        isAdmin,
+        createdAt: new Date().toISOString()
+      };
+
+      users.push(newUser);
+      saveUsers(users);
+      saveCurrentUser(newUser);
+
+      successEl.textContent = `✅ ${isAdmin ? '👑 ادمین عزیز خوش اومدی!' : '🎉 ثبت نام موفق!'}`;
+      errorEl.textContent = '';
+
+      setTimeout(() => {
+        closeRegisterModal();
+        location.reload();
+      }, 1500);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+      renderUserProfile();
+    });
+
+    console.log('🔥 سیستم ثبت نام و ادمین با موفقیت بارگذاری شد!');
+    console.log('🔑 رمز ادمین: 29thd03kasra');
+  </script>
+</body>
+</html>

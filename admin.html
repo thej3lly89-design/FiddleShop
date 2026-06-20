@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiddle Shop | پنل ادمین</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* استایل‌های پنل ادمین */
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      opacity: 1 !important;
+      display: block !important;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .admin-header h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6f00, #ff9100);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .admin-header .admin-badge {
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      padding: 8px 20px;
+      border-radius: 30px;
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(255, 111, 0, 0.3);
+    }
+
+    .admin-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 35px;
+    }
+
+    .admin-stat-card {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 22px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      transition: all 0.4s ease;
+    }
+
+    .admin-stat-card:hover {
+      border-color: rgba(255, 111, 0, 0.2);
+      transform: translateY(-3px);
+    }
+
+    .admin-stat-card .number {
+      font-size: 2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6f00, #ff9100);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .admin-stat-card .label {
+      color: #888;
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+
+    .admin-stat-card .icon {
+      font-size: 1.8rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .admin-section {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 20px;
+      padding: 25px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      margin-bottom: 30px;
+    }
+
+    .admin-section .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .admin-section .section-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #ff9100;
+    }
+
+    .admin-section .section-header .count-badge {
+      background: rgba(255, 111, 0, 0.15);
+      padding: 4px 14px;
+      border-radius: 20px;
+      color: #ff9100;
+      font-size: 0.8rem;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+    }
+
+    .admin-table-wrap {
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    .admin-table th {
+      text-align: right;
+      padding: 12px 15px;
+      color: #ff9100;
+      font-weight: 700;
+      border-bottom: 2px solid rgba(255, 111, 0, 0.15);
+      white-space: nowrap;
+    }
+
+    .admin-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #ddd;
+      vertical-align: middle;
+    }
+
+    .admin-table tr:hover {
+      background: rgba(255, 111, 0, 0.05);
+    }
+
+    .admin-table .actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .admin-table .actions button {
+      padding: 4px 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .admin-table .actions .btn-promote {
+      background: rgba(255, 111, 0, 0.2);
+      color: #ff9100;
+    }
+
+    .admin-table .actions .btn-promote:hover {
+      background: rgba(255, 111, 0, 0.3);
+    }
+
+    .admin-table .actions .btn-demote {
+      background: rgba(255, 165, 0, 0.15);
+      color: #ffa500;
+    }
+
+    .admin-table .actions .btn-demote:hover {
+      background: rgba(255, 165, 0, 0.25);
+    }
+
+    .admin-table .actions .btn-delete {
+      background: rgba(255, 0, 0, 0.2);
+      color: #ff4444;
+    }
+
+    .admin-table .actions .btn-delete:hover {
+      background: rgba(255, 0, 0, 0.3);
+    }
+
+    .admin-table .status-select {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 4px 10px;
+      color: #fff;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .admin-table .status-select:focus {
+      outline: none;
+      border-color: #ff6f00;
+    }
+
+    .admin-table .status-select option {
+      background: #1a1a1a;
+      color: #fff;
+    }
+
+    .access-denied {
+      text-align: center;
+      padding: 80px 20px;
+    }
+
+    .access-denied .icon {
+      font-size: 5rem;
+      display: block;
+      margin-bottom: 20px;
+    }
+
+    .access-denied h2 {
+      font-size: 2rem;
+      color: #ff4444;
+      margin-bottom: 10px;
+    }
+
+    .access-denied p {
+      color: #888;
+      max-width: 500px;
+      margin: 0 auto 25px;
+      line-height: 1.8;
+    }
+
+    .access-denied .btn-back {
+      display: inline-block;
+      padding: 12px 30px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      transition: 0.3s;
+    }
+
+    .access-denied .btn-back:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(255, 111, 0, 0.3);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #666;
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .empty-state h4 {
+      color: #888;
+      margin-bottom: 5px;
+    }
+
+    .user-profile-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 111, 0, 0.1);
+      padding: 4px 12px 4px 8px;
+      border-radius: 50px;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+    }
+
+    .user-profile-header .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff6f00, #e65100);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: #fff;
+    }
+
+    .user-profile-header .user-name {
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #fff;
+    }
+
+    .user-profile-header .user-badge {
+      font-size: 0.55rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      background: rgba(255, 111, 0, 0.2);
+      color: #ff9100;
+      border: 1px solid rgba(255, 111, 0, 0.2);
+    }
+
+    .user-profile-header .logout-btn {
+      background: none;
+      border: none;
+      color: #ff4444;
+      cursor: pointer;
+      font-size: 0.8rem;
+      padding: 0 3px;
+      opacity: 0.5;
+    }
+
+    .user-profile-header .logout-btn:hover {
+      opacity: 1;
+    }
+
+    .nav-link.hidden-link {
+      display: none !important;
+    }
+
+    /* مخفی کردن پریلودر */
+    .preloader {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 20px 12px;
+      }
+      .admin-header h1 {
+        font-size: 1.5rem;
+      }
+      .admin-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .admin-stat-card .number {
+        font-size: 1.5rem;
+      }
+      .admin-section {
+        padding: 15px;
+      }
+      .admin-table th,
+      .admin-table td {
+        padding: 8px 10px;
+        font-size: 0.75rem;
+      }
+      .admin-table .actions button {
+        padding: 2px 8px;
+        font-size: 0.65rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .admin-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- حذف کامل پریلودر و استفاده از صفحه مستقیم -->
+  <div class="page-wrap" style="opacity:1 !important; transform:none !important;">
+    <header class="top-bar">
+      <div class="brand">Fiddle Shop</div>
+      <div id="user-profile-container"></div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">خانه</a>
+        <a href="products.html" class="nav-link">محصولات</a>
+        <a href="login.html" class="nav-link auth-link" id="loginLink">ورود</a>
+        <a href="#" class="nav-link register-btn-header" id="open-register-btn">📝 ثبت نام</a>
+        <a href="admin.html" class="nav-link admin-link hidden">پنل ادمین</a>
+      </nav>
+    </header>
+
+    <main>
+      <div id="adminPanel" class="admin-container">
+        <!-- توسط JS پر میشه -->
+        <div style="text-align:center;padding:50px;color:#888;">
+          <span style="font-size:3rem;display:block;margin-bottom:15px;">⏳</span>
+          در حال بارگذاری پنل ادمین...
+        </div>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>© ۲۰۲۶ Fiddle Shop. همه حقوق محفوظ است.</p>
+    </footer>
+  </div>
+
+  <script>
+    // ============================================
+    // پنل ادمین - نسخه نهایی
+    // ============================================
+
+    const ADMIN_CODE = '29thd03kasra';
+    const USERS_KEY = 'fiddle-users';
+    const CURRENT_USER_KEY = 'fiddle-current-user';
+    const ORDERS_KEY = 'fiddle-orders';
+
+    function getUsers() {
+      try {
+        const data = localStorage.getItem(USERS_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function getCurrentUser() {
+      try {
+        const data = localStorage.getItem(CURRENT_USER_KEY);
+        return data ? JSON.parse(data) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function getOrders() {
+      try {
+        const data = localStorage.getItem(ORDERS_KEY);
+        return data ? JSON.parse(data) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveOrders(orders) {
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    }
+
+    function formatPrice(value) {
+      return (value || 0).toLocaleString('fa-IR') + ' تومان';
+    }
+
+    // === نمایش پروفایل ===
+    function renderUserProfile() {
+      const user = getCurrentUser();
+      const container = document.getElementById('user-profile-container');
+      if (!container) return;
+
+      if (user) {
+        const firstLetter = (user.displayName || user.username || 'F')[0].toUpperCase();
+        container.innerHTML = `
+          <div class="user-profile-header">
+            <div class="avatar">${firstLetter}</div>
+            <span class="user-name">${user.displayName || user.username}</span>
+            <span class="user-badge">${user.isAdmin ? '👑 ادمین' : '⭐ کاربر'}</span>
+            <button class="logout-btn" onclick="logoutUser()">🚪</button>
+          </div>
+        `;
+
+        const loginLink = document.getElementById('loginLink');
+        const registerBtn = document.getElementById('open-register-btn');
+        if (loginLink) loginLink.classList.add('hidden-link');
+        if (registerBtn) {
+          registerBtn.textContent = '📊 داشبورد';
+          registerBtn.href = 'dashboard.html';
+          registerBtn.style.background = 'linear-gradient(135deg, #ff6f00, #e65100)';
+          registerBtn.style.color = '#fff';
+        }
+
+        if (user.isAdmin) {
+          document.querySelector('.admin-link')?.classList.remove('hidden');
+        }
+      } else {
+        container.innerHTML = `
+          <div style="display:flex;align-items:center;gap:6px;color:#888;font-size:0.8rem;">
+            <span>👤</span>
+            <span>مهمان</span>
+          </div>
+        `;
+      }
+    }
+
+    function logoutUser() {
+      if (confirm('آیا مطمئنی می‌خوای خارج بشی؟')) {
+        localStorage.removeItem(CURRENT_USER_KEY);
+        window.location.href = 'index.html';
+      }
+    }
+
+    // === رندر پنل ادمین ===
+    function renderAdminPanel() {
+      const panel = document.getElementById('adminPanel');
+      if (!panel) return;
+
+      const user = getCurrentUser();
+      const isAdmin = user && user.isAdmin === true;
+
+      if (!isAdmin) {
+        panel.innerHTML = `
+          <div class="access-denied">
+            <span class="icon">🚫</span>
+            <h2>دسترسی محدود</h2>
+            <p>این صفحه مخصوص ادمین‌های سایت است. شما دسترسی لازم را ندارید.</p>
+            <p style="color:#ff6f00;font-size:0.9rem;">🔑 رمز ادمین: ${ADMIN_CODE}</p>
+            <a href="index.html" class="btn-back">← بازگشت به صفحه اصلی</a>
+          </div>
+        `;
+        return;
+      }
+
+      const users = getUsers();
+      const orders = getOrders();
+
+      const totalUsers = users.length;
+      const totalOrders = orders.length;
+      const completedOrders = orders.filter(o => o && o.status === 'completed').length;
+      const pendingOrders = orders.filter(o => o && (o.status === 'pending' || o.status === 'processing')).length;
+      const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+      const adminUsers = users.filter(u => u && u.isAdmin === true).length;
+
+      panel.innerHTML = `
+        <div class="admin-header">
+          <div>
+            <h1>👑 پنل مدیریت</h1>
+            <p style="color:#888;margin-top:4px;">به پنل ادمین Fiddle Shop خوش اومدی!</p>
+          </div>
+          <div class="admin-badge">👑 ${user.displayName || user.username}</div>
+        </div>
+
+        <div class="admin-stats">
+          <div class="admin-stat-card">
+            <span class="icon">👤</span>
+            <div class="number">${totalUsers}</div>
+            <div class="label">کاربران ثبت شده</div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="icon">👑</span>
+            <div class="number">${adminUsers}</div>
+            <div class="label">ادمین‌ها</div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="icon">📦</span>
+            <div class="number">${totalOrders}</div>
+            <div class="label">سفارش‌های ثبت شده</div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="icon">✅</span>
+            <div class="number">${completedOrders}</div>
+            <div class="label">تکمیل شده</div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="icon">⏳</span>
+            <div class="number">${pendingOrders}</div>
+            <div class="label">در انتظار / در حال پردازش</div>
+          </div>
+          <div class="admin-stat-card">
+            <span class="icon">💰</span>
+            <div class="number">${formatPrice(totalRevenue)}</div>
+            <div class="label">درآمد کلی</div>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <div class="section-header">
+            <h2>👥 مدیریت کاربران</h2>
+            <span class="count-badge">${totalUsers} کاربر</span>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>نام نمایشی</th>
+                  <th>نام کاربری</th>
+                  <th>نقش</th>
+                  <th>تاریخ ثبت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <div class="section-header">
+            <h2>📋 مدیریت سفارشات</h2>
+            <span class="count-badge">${totalOrders} سفارش</span>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>محصول</th>
+                  <th>کاربر</th>
+                  <th>مبلغ</th>
+                  <th>تاریخ</th>
+                  <th>وضعیت</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      `;
+
+      // جدول کاربران
+      const usersBody = document.getElementById('usersTableBody');
+      if (usersBody) {
+        if (users.length === 0) {
+          usersBody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><span class="empty-icon">📭</span><h4>هنوز کاربری ثبت نشده</h4></div></td></tr>`;
+        } else {
+          usersBody.innerHTML = users.map(u => `
+            <tr>
+              <td>${u.displayName || u.username}</td>
+              <td>${u.username}</td>
+              <td>${u.isAdmin ? '👑 ادمین' : '⭐ کاربر'}</td>
+              <td>${u.createdAt ? new Date(u.createdAt).toLocaleDateString('fa-IR') : 'نامشخص'}</td>
+              <td>
+                <div class="actions">
+                  ${!u.isAdmin ? `<button class="btn-promote" onclick="promoteUser(${u.id})">⭐ ارتقا</button>` : 
+                    `<button class="btn-demote" onclick="demoteUser(${u.id})">⬇️ تنزل</button>`}
+                  ${u.id !== getCurrentUser()?.id ? 
+                    `<button class="btn-delete" onclick="deleteUser(${u.id})">🗑️ حذف</button>` : 
+                    `<span style="color:#666;font-size:0.7rem;">(خودتان)</span>`}
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
+
+      // جدول سفارشات
+      const ordersBody = document.getElementById('ordersTableBody');
+      if (ordersBody) {
+        if (orders.length === 0) {
+          ordersBody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><span class="empty-icon">📭</span><h4>هنوز سفارشی ثبت نشده</h4></div></td></tr>`;
+        } else {
+          ordersBody.innerHTML = orders.map((o, index) => `
+            <tr>
+              <td>#${o.id || index + 1}</td>
+              <td>${o.product || 'نامشخص'}</td>
+              <td>${o.username || 'کاربر مهمان'}</td>
+              <td>${formatPrice(o.total || 0)}</td>
+              <td>${o.date || new Date().toLocaleDateString('fa-IR')}</td>
+              <td>
+                <select class="status-select" onchange="updateOrderStatus(${index}, this.value)">
+                  <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>در انتظار</option>
+                  <option value="processing" ${o.status === 'processing' ? 'selected' : ''}>در حال پردازش</option>
+                  <option value="completed" ${o.status === 'completed' ? 'selected' : ''}>تکمیل شده</option>
+                  <option value="cancelled" ${o.status === 'cancelled' ? 'selected' : ''}>لغو شده</option>
+                </select>
+              </td>
+              <td>
+                <div class="actions">
+                  <button class="btn-delete" onclick="deleteOrder(${index})">🗑️ حذف</button>
+                </div>
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
+    }
+
+    // === توابع مدیریت ===
+    window.promoteUser = function(userId) {
+      if (!confirm('آیا از ارتقا این کاربر به ادمین مطمئنی؟')) return;
+      const users = getUsers();
+      const user = users.find(u => u.id === userId);
+      if (user) {
+        user.isAdmin = true;
+        saveUsers(users);
+        renderAdminPanel();
+        alert('✅ کاربر با موفقیت به ادمین ارتقا یافت!');
+      }
+    };
+
+    window.demoteUser = function(userId) {
+      const currentUser = getCurrentUser();
+      if (userId === currentUser?.id) {
+        alert('❌ نمی‌تونی خودت رو تنزل بدی!');
+        return;
+      }
+      if (!confirm('آیا از تنزل این ادمین مطمئنی؟')) return;
+      const users = getUsers();
+      const user = users.find(u => u.id === userId);
+      if (user) {
+        user.isAdmin = false;
+        saveUsers(users);
+        renderAdminPanel();
+        alert('✅ کاربر با موفقیت تنزل یافت!');
+      }
+    };
+
+    window.deleteUser = function(userId) {
+      const currentUser = getCurrentUser();
+      if (userId === currentUser?.id) {
+        alert('❌ نمی‌تونی خودت رو حذف کنی!');
+        return;
+      }
+      if (!confirm('آیا از حذف این کاربر مطمئنی؟ این عمل غیرقابل بازگشت است!')) return;
+      let users = getUsers();
+      users = users.filter(u => u.id !== userId);
+      saveUsers(users);
+      renderAdminPanel();
+      alert('✅ کاربر با موفقیت حذف شد!');
+    };
+
+    window.updateOrderStatus = function(index, newStatus) {
+      const orders = getOrders();
+      if (orders[index]) {
+        orders[index].status = newStatus;
+        saveOrders(orders);
+        renderAdminPanel();
+      }
+    };
+
+    window.deleteOrder = function(index) {
+      if (!confirm('آیا از حذف این سفارش مطمئنی؟ این عمل غیرقابل بازگشت است!')) return;
+      const orders = getOrders();
+      orders.splice(index, 1);
+      saveOrders(orders);
+      renderAdminPanel();
+      alert('✅ سفارش با موفقیت حذف شد!');
+    };
+
+    // === بارگذاری ===
+    renderUserProfile();
+    renderAdminPanel();
+
+    console.log('🔥 پنل ادمین با موفقیت بارگذاری شد!');
+    console.log('🔑 رمز ادمین:', ADMIN_CODE);
+  </script>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiddle Shop | ثبت نام</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="preloader">
+    <div class="preloader-circle"></div>
+    <p>در حال بارگذاری...</p>
+  </div>
+  <div class="page-wrap">
+    <header class="top-bar">
+      <div class="brand">Fiddle Shop</div>
+      <div class="user-greeting hidden">کاربر مهمان</div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">خانه</a>
+        <a href="products.html" class="nav-link">محصولات</a>
+        <a href="login.html" class="nav-link">ورود</a>
+      </nav>
+    </header>
+
+    <header class="hero hero-secondary">
+      <div class="hero-content">
+        <span class="hero-badge">ثبت نام سریع</span>
+        <h1>حساب خود را بسازید</h1>
+        <p>با ثبت نام به صورت خودکار وارد حساب شوید و تجربه کاملی از فروشگاه به دست آورید.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="section auth-section">
+        <div class="auth-card">
+          <h2>فرم ثبت نام</h2>
+          <p>نام کاربری و رمز عبور خود را وارد کنید تا همین الان وارد حساب خود شوید.</p>
+          <form id="register-form" class="auth-form">
+            <div class="form-group">
+              <label for="register-display">نام نمایشی</label>
+              <input id="register-display" name="displayName" type="text" placeholder="مثلاً احمد" required>
+            </div>
+            <div class="form-group">
+              <label for="register-username">نام کاربری</label>
+              <input id="register-username" name="username" type="text" placeholder="مثلاً player01" required>
+            </div>
+            <div class="form-group">
+              <label for="register-password">رمز عبور</label>
+              <input id="register-password" name="password" type="password" placeholder="رمز عبور قوی" required>
+            </div>
+            <button type="submit" class="btn-primary">ثبت نام</button>
+          </form>
+          <div class="auth-result"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>© ۲۰۲۶ Fiddle Shop. همه حقوق محفوظ است.</p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
